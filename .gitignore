@@ -1,0 +1,9 @@
+node_modules
+dist
+e2e-out
+test-results
+playwright-report
+art/raw
+tools/gen/node_modules
+*.log
+.env*

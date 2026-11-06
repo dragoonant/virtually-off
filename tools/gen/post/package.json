@@ -1,0 +1,1 @@
+{"name":"vo-gen-post","private":true,"type":"module","dependencies":{"@gltf-transform/core":"^4.5.1","@gltf-transform/extensions":"^4.5.1","@gltf-transform/functions":"^4.5.1","gl-matrix":"^3.4.4","sharp":"^0.35.5"}}

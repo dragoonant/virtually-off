@@ -1,0 +1,431 @@
+{
+ "flux": [
+  {
+   "id": "arena1",
+   "aspect": "16:9",
+   "mp": 2,
+   "seeds": [
+    11,
+    12,
+    13
+   ],
+   "prompt": "Equirectangular 360-degree panoramic view from a platform high above a blue-white ocean planet. The horizon runs through the vertical centre of the frame. The lower half is the curved planet far below with swirling white cloud bands over deep blue ocean. The upper half is deep black space with faint stars and one blazing white sun high up casting hard light. Photorealistic, cinematic, wordless, no text, no logos, no structures."
+  },
+  {
+   "id": "arena2",
+   "aspect": "16:9",
+   "mp": 2,
+   "seeds": [
+    21,
+    22,
+    23
+   ],
+   "prompt": "Equirectangular 360-degree panoramic view of deep space. The horizon runs through the vertical centre of the frame. A huge banded amber and orange gas giant fills the lower half far below, and a bright thin ring system arches across the dark blue sky above, with a low sunset glow of warm light on the horizon. Faint stars in the dark blue space. Photorealistic, cinematic, wordless, no text, no logos, no structures."
+  },
+  {
+   "id": "arena3",
+   "aspect": "16:9",
+   "mp": 2,
+   "seeds": [
+    31,
+    32,
+    33
+   ],
+   "prompt": "Equirectangular 360-degree panoramic view of deep space around a dim red dwarf star. The horizon runs through the vertical centre of the frame. The lower half is a scorched dark planet far below with glowing orange lava fissures across its surface. The upper half is black space with a dim red sun, drifting rock debris and distant orbital structures in silhouette. Photorealistic, cinematic, wordless, no text, no logos."
+  },
+  {
+   "id": "floor1",
+   "aspect": "1:1",
+   "mp": 1,
+   "seeds": [
+    41,
+    42,
+    43
+   ],
+   "prompt": "Top-down orthographic view of machined deck plating, flat even lighting, no perspective. Light grey composite armour panels with fine panel seams, small recessed bolts, and amber and black hazard strips along the panel edges. Uniform repeating detail across the whole image, no single large feature in the middle. Satin finish, clean, wordless, no text, no numbers, no logos."
+  },
+  {
+   "id": "floor2",
+   "aspect": "1:1",
+   "mp": 1,
+   "seeds": [
+    51,
+    52,
+    53
+   ],
+   "prompt": "Top-down orthographic view of dark gunmetal hexagon-pattern deck plating, flat even lighting, no perspective. Machined hexagonal plates with thin glowing cyan inlay lines between them, fine bevelled edges, satin finish. Uniform repeating detail across the whole image, no single large feature in the middle. Wordless, no text, no numbers, no logos."
+  },
+  {
+   "id": "floor3",
+   "aspect": "1:1",
+   "mp": 1,
+   "seeds": [
+    61,
+    62,
+    63
+   ],
+   "prompt": "Top-down orthographic view of heat-stained dark steel grating deck, flat even lighting, no perspective. Heavy industrial grating with scorched brown and blue heat tint, and orange and black warning chevron stripes on border plates. Uniform repeating detail across the whole image, no single large feature in the middle. Wordless, no text, no numbers, no logos."
+  },
+  {
+   "id": "wall1",
+   "aspect": "1:1",
+   "mp": 1,
+   "seeds": [
+    71,
+    72,
+    73
+   ],
+   "prompt": "Front-on flat view of an armoured barrier panel, even lighting, no perspective. Gunmetal composite plate with bolted edges, panel seams, and diagonal amber stripes across a band. Satin finish, clean, highly detailed. Wordless, no text, no numbers, no logos."
+  },
+  {
+   "id": "pillar",
+   "aspect": "2:3",
+   "mp": 1,
+   "seeds": [
+    81,
+    82
+   ],
+   "prompt": "A single tall square armoured cover pillar about three times taller than it is wide, gunmetal and white composite plating with vertical glowing cyan light strips, satin finish, clean high-tech. Front three-quarter view, full object in view, no base or ground, isolated on a plain pure white background. Wordless, no text, no logos."
+  },
+  {
+   "id": "bunker",
+   "aspect": "3:2",
+   "mp": 1,
+   "seeds": [
+    91,
+    92
+   ],
+   "prompt": "A single low wide angular armoured barricade block, gunmetal and white composite plating with amber hazard edge stripes, satin finish, clean high-tech. Front three-quarter view, full object in view, no base or ground, isolated on a plain pure white background. Wordless, no text, no logos."
+  },
+  {
+   "id": "gantry",
+   "aspect": "2:3",
+   "mp": 1,
+   "seeds": [
+    101,
+    102
+   ],
+   "prompt": "A single squat open-frame steel gantry tower with a cluster of lamps on top and hanging cables, gunmetal and white composite with amber accents, satin finish, clean high-tech. Front three-quarter view, full object in view, no base or ground, isolated on a plain pure white background. Wordless, no text, no logos."
+  },
+  {
+   "id": "pylon",
+   "aspect": "2:3",
+   "mp": 1,
+   "seeds": [
+    111,
+    112
+   ],
+   "prompt": "A single slim energy beacon pylon with a glowing cyan core, wide footed base, gunmetal and white composite plating with amber accents, satin finish, clean high-tech. Front three-quarter view, full object in view, isolated on a plain pure white background. Wordless, no text, no logos."
+  },
+  {
+   "id": "floor1b",
+   "aspect": "1:1",
+   "mp": 1,
+   "seeds": [
+    141,
+    142,
+    143
+   ],
+   "prompt": "Extreme close-up seamless texture of light grey composite deck armour plating, shot straight down, flat even lighting. The panels fill the entire frame edge to edge with no border, no frame and no background visible. A grid of many small square panels with fine seams and tiny recessed bolts, with amber and black hazard stripes running along a few of the panel edges. Satin finish, clean, wordless, no text, no numbers, no logos."
+  },
+  {
+   "id": "floor3b",
+   "aspect": "1:1",
+   "mp": 1,
+   "seeds": [
+    161,
+    162,
+    163
+   ],
+   "prompt": "Extreme close-up seamless texture of heat-stained dark steel deck plating, shot straight down, flat even lighting. The surface fills the entire frame edge to edge with no border and no background visible. Dark gunmetal diamond-tread plates with scorched blue and brown heat tint and a few orange and black warning chevron stripes. Evenly distributed detail, wordless, no text, no numbers, no logos."
+  },
+  {
+   "id": "wall1b",
+   "aspect": "1:1",
+   "mp": 1,
+   "seeds": [
+    171,
+    172,
+    173
+   ],
+   "prompt": "Extreme close-up seamless texture of armoured barrier plating, shot straight on, flat even lighting. The gunmetal composite panels fill the entire frame edge to edge with no border and no background visible. Bolted panel seams and a band of diagonal amber stripes across the middle. Satin finish, highly detailed, wordless, no text, no numbers, no logos."
+  },
+  {
+   "id": "gantryb",
+   "aspect": "3:4",
+   "mp": 1,
+   "seeds": [
+    201,
+    202,
+    203
+   ],
+   "prompt": "A single squat heavy gantry tower built from thick chunky box-section gunmetal steel beams with solid diagonal cross bracing and a solid platform, wider than a slim frame, with a block-shaped cluster of amber lamps on top. Gunmetal and white composite with amber accents, satin finish, clean high-tech. Front three-quarter view, full object in view, isolated on a plain pure white background. No loose cables, wordless, no text, no logos."
+  }
+ ],
+ "picks": {
+  "public/assets/sky/arena1.webp": {
+   "from": "arena1_s11.png",
+   "kind": "pano"
+  },
+  "public/assets/sky/arena2.webp": {
+   "from": "arena2_s21.png",
+   "kind": "pano"
+  },
+  "public/assets/sky/arena3.webp": {
+   "from": "arena3_s31.png",
+   "kind": "pano"
+  },
+  "public/assets/textures/floor1.webp": {
+   "from": "floor1b_s142.png",
+   "kind": "square"
+  },
+  "public/assets/textures/floor2.webp": {
+   "from": "floor2_s53.png",
+   "kind": "square"
+  },
+  "public/assets/textures/floor3.webp": {
+   "from": "floor3b_s162.png",
+   "kind": "square"
+  },
+  "public/assets/textures/wall1.webp": {
+   "from": "wall1b_s172.png",
+   "kind": "square"
+  },
+  "art/props/pillar.png": {
+   "from": "pillar_s81.png",
+   "kind": "png"
+  },
+  "art/props/bunker.png": {
+   "from": "bunker_s91.png",
+   "kind": "png"
+  },
+  "art/props/gantry.png": {
+   "from": "gantryb_s202.png",
+   "kind": "png"
+  },
+  "art/props/pylon.png": {
+   "from": "pylon_s111.png",
+   "kind": "png"
+  }
+ },
+ "music": [
+  {
+   "id": "title",
+   "duration": 90,
+   "bpm": 100,
+   "key": "D minor",
+   "cand": 1,
+   "seed": 1001,
+   "prompt": "instrumental, electronic orchestral, clean modern production, wide stereo mix, no vocals, majestic cinematic slow build, wide synth pads, french horns, hopeful, rising strings, soft taiko, arpeggiated synth, space arena"
+  },
+  {
+   "id": "select",
+   "duration": 60,
+   "bpm": 118,
+   "key": "A minor",
+   "cand": 1,
+   "seed": 1002,
+   "loop": 1,
+   "prompt": "instrumental, electronic orchestral, clean modern production, wide stereo mix, no vocals, tense, pulsing synth bass, ticking percussion, minimal, hypnotic sequencer, dark atmosphere, loopable"
+  },
+  {
+   "id": "battle1",
+   "duration": 120,
+   "bpm": 150,
+   "key": "E minor",
+   "cand": 2,
+   "seed": 1101,
+   "prompt": "instrumental, electronic orchestral, clean modern production, wide stereo mix, no vocals, aggressive driving hybrid orchestral electronic, heroic brass lead, driving synth bass, big taiko, hybrid percussion, string stabs, arpeggiated synths, high energy"
+  },
+  {
+   "id": "battle2",
+   "duration": 120,
+   "bpm": 160,
+   "key": "C minor",
+   "cand": 2,
+   "seed": 1201,
+   "prompt": "instrumental, electronic orchestral, clean modern production, wide stereo mix, no vocals, dark, distorted synth bass, fast breakbeat drums, string ostinato, brass stabs, relentless, aggressive electronic orchestral"
+  },
+  {
+   "id": "battle3",
+   "duration": 120,
+   "bpm": 145,
+   "key": "F# minor",
+   "cand": 2,
+   "seed": 1301,
+   "prompt": "instrumental, electronic orchestral, clean modern production, wide stereo mix, no vocals, epic, wordless choir pad ah, pounding taiko drums, synth arpeggios, soaring strings, brass, heroic, huge"
+  },
+  {
+   "id": "victory",
+   "duration": 25,
+   "bpm": 120,
+   "key": "C major",
+   "cand": 1,
+   "seed": 1401,
+   "prompt": "instrumental, electronic orchestral, clean modern production, wide stereo mix, no vocals, triumphant fanfare, brass and strings, big drums, uplifting, resolves to a final held chord"
+  },
+  {
+   "id": "defeat",
+   "duration": 15,
+   "bpm": 70,
+   "key": "D minor",
+   "cand": 1,
+   "seed": 1501,
+   "prompt": "instrumental, electronic orchestral, clean modern production, wide stereo mix, no vocals, sombre low strings, slow, falling synth, somber, fading, final low drone"
+  }
+ ],
+ "sfx": [
+  {
+   "id": "beam_shot",
+   "target": 1,
+   "prompt": "short sci-fi energy rifle shot, bright zap with a bass thump, clean"
+  },
+  {
+   "id": "heavy_beam",
+   "target": 2,
+   "prompt": "big charged energy cannon blast, charge up then massive beam release"
+  },
+  {
+   "id": "sniper_shot",
+   "target": 1.5,
+   "prompt": "sharp piercing high-velocity rail shot with a loud crack and a long tail"
+  },
+  {
+   "id": "vulcan",
+   "target": 1,
+   "prompt": "rapid burst of small energy rounds, fast automatic sci-fi gun fire"
+  },
+  {
+   "id": "missile_launch",
+   "target": 1.5,
+   "prompt": "missile whoosh launch, rocket ignition and fast flyby"
+  },
+  {
+   "id": "grenade_launch",
+   "target": 1,
+   "prompt": "heavy thunk of a grenade launcher firing, deep punchy"
+  },
+  {
+   "id": "explosion_small",
+   "target": 1.5,
+   "prompt": "small explosion, sharp blast with short rumble"
+  },
+  {
+   "id": "explosion_big",
+   "target": 3,
+   "prompt": "deep heavy explosion with flying debris and long rumbling tail"
+  },
+  {
+   "id": "hit_metal",
+   "target": 0.8,
+   "prompt": "heavy armoured impact clang with crunch, metal on metal"
+  },
+  {
+   "id": "hit_beam",
+   "target": 0.8,
+   "prompt": "energy beam impact sizzle on metal, electric crackle"
+  },
+  {
+   "id": "sword_swing",
+   "target": 0.8,
+   "prompt": "energy blade swing, humming whoosh"
+  },
+  {
+   "id": "sword_hit",
+   "target": 1,
+   "prompt": "energy blade slash impact, sizzling cut on armour"
+  },
+  {
+   "id": "guard_block",
+   "target": 1,
+   "prompt": "energy shield deflect, ringing shimmer"
+  },
+  {
+   "id": "dash",
+   "target": 1.2,
+   "prompt": "powerful thruster boost burst, jet roar onset, fast whoosh"
+  },
+  {
+   "id": "thruster_loop",
+   "target": 4,
+   "prompt": "steady jet thruster roar, continuous constant rushing engine, even texture"
+  },
+  {
+   "id": "jump",
+   "target": 1,
+   "prompt": "thruster lift-off burst, short jet blast rising"
+  },
+  {
+   "id": "land",
+   "target": 1,
+   "prompt": "heavy mechanical stomp landing with hydraulic hiss, big metal thud"
+  },
+  {
+   "id": "footstep",
+   "target": 0.5,
+   "prompt": "single heavy metal footstep of a giant machine, dull clank"
+  },
+  {
+   "id": "lock_on",
+   "target": 0.4,
+   "prompt": "short high electronic targeting beep, clean digital blip"
+  },
+  {
+   "id": "warning",
+   "target": 1.5,
+   "prompt": "cockpit warning alarm, repeating urgent electronic beeps"
+  },
+  {
+   "id": "drone_deploy",
+   "target": 1.2,
+   "prompt": "small drones launching with rising electric whine, buzzing"
+  },
+  {
+   "id": "ko_blast",
+   "target": 4,
+   "prompt": "massive machine destruction explosion, huge blast with long deep rumble and falling debris"
+  },
+  {
+   "id": "ui_move",
+   "target": 0.2,
+   "prompt": "soft digital UI tick, tiny click"
+  },
+  {
+   "id": "ui_confirm",
+   "target": 0.6,
+   "prompt": "bright digital UI confirm chime, short ascending two-note ping"
+  },
+  {
+   "id": "ui_back",
+   "target": 0.4,
+   "prompt": "low digital UI cancel blip, short descending"
+  },
+  {
+   "id": "power_up",
+   "target": 2,
+   "prompt": "machine systems powering up, electric hum rising in pitch, servo spin up"
+  }
+ ],
+ "sfxNegative": "music, voice, speech, melody, singing, vocals",
+ "voice": {
+  "instruct": "A calm, authoritative female range-control officer, mid pitch, crisp and clear like a radio channel, measured and confident, slight intensity on commands.",
+  "seed": 4242,
+  "lines": {
+   "round1": "Round one.",
+   "round2": "Round two.",
+   "round_final": "Final round.",
+   "engage": "Engage!",
+   "down": "Machine down!",
+   "timeup": "Time up.",
+   "victory": "Victory.",
+   "defeat": "Defeat.",
+   "draw": "Draw.",
+   "perfect": "Perfect.",
+   "select": "Select your machine.",
+   "title": "Virtually Off.",
+   "training": "Training range. Free fire.",
+   "ready": "Ready.",
+   "continue": "Continue?"
+  }
+ }
+}
