@@ -11,7 +11,7 @@ import { audio } from './audio'
 import { ARENAS, TRAINING } from './arena'
 import { Battle, type MatchResult } from './battle'
 import { Hud } from './hud'
-import { HumanControls, MenuControls, lastDevice, padConnected, type MenuInput } from './input'
+import { HumanControls, MenuControls, endFrame, lastDevice, padConnected, type MenuInput } from './input'
 import { ROSTER, mechById } from './roster'
 import { Showcase } from './showcase'
 import { Brain, DIFFICULTY, DIFFICULTY_NAMES, type DummyMode } from './ai'
@@ -506,7 +506,7 @@ async function boot(): Promise<void> {
     /** Test hook: run the match for `sec` seconds of game time at 60 Hz, then draw one frame. */
     advance(sec: number) {
       if (!battle) return
-      for (let i = 0; i < Math.round(sec * 60); i++) battle.update(1 / 60)
+      for (let i = 0; i < Math.round(sec * 60); i++) { battle.update(1 / 60); endFrame() }
       hud?.update(1 / 60, battle.camera.cam, W, H)
       composer.render(1 / 60)
     },
@@ -543,6 +543,7 @@ function frame(now: number): void {
     renderPass.camera = showcase.camera
     composer.render(dt)
   }
+  endFrame()
 }
 
 // rule 24: no text selection or callouts on a long press

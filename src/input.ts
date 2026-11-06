@@ -29,12 +29,20 @@ const dz = (v: number) => (Math.abs(v) < DEAD ? 0 : (v - Math.sign(v) * DEAD) / 
 const CHORD_STEPS = 5 // a trigger waits this many steps (about 83 ms) for the other one before firing alone
 
 const keys = new Set<string>()
+// keys pressed since the last frame, so a tap shorter than a frame still counts
+const taps = new Set<string>()
+const down = (c: string) => keys.has(c) || taps.has(c)
+/** Called once at the end of every frame. */
+export function endFrame(): void {
+  taps.clear()
+}
 let lastPadIndex = -1
 export let lastDevice: 'pad' | 'keys' = 'keys'
 
 if (typeof window !== 'undefined') {
   window.addEventListener('keydown', (e) => {
     keys.add(e.code)
+    if (!e.repeat) taps.add(e.code)
     lastDevice = 'keys'
     if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.code)) e.preventDefault()
   })
@@ -79,7 +87,7 @@ export class HumanControls {
   read(): Intent {
     const p = getPad()
     const it = emptyIntent()
-    const k = (c: string) => keys.has(c)
+    const k = down
 
     let mx = 0, my = 0, look = 0, dashHeld = false, jumpHeld = false, guard = false, lHeld = false, rHeld = false, cKey = false, turnHeld = false
     if (p) {
@@ -165,7 +173,7 @@ export class MenuControls {
   read(dt: number): MenuInput {
     this.t += dt
     const p = getPad()
-    const k = (c: string) => keys.has(c)
+    const k = down
     const ax = p ? p.axes[0] ?? 0 : 0
     const ay = p ? p.axes[1] ?? 0 : 0
     const raw = {
