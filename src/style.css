@@ -204,3 +204,91 @@ kbd { font-family: var(--mono); font-size: 12px; padding: 2px 7px; border: 1px s
 body.keys .glyph.pad { display: none; }
 body.keys .glyph.keys { display: inline; }
 .hud-hurt { position: absolute; inset: 0; opacity: 0; background: radial-gradient(ellipse at center, transparent 55%, rgba(255, 40, 30, 0.55) 100%); }
+
+/* --- touch controls ---------------------------------------------------------------------------------------- */
+body { touch-action: manipulation; overscroll-behavior: none; }
+.glyph.touch, .touch-only { display: none; }
+body.touch .glyph.pad, body.touch .glyph.keys { display: none; }
+body.touch .glyph.touch { display: inline; }
+body.touch .touch-only { display: block; }
+body.touch .no-touch { display: none; }
+body.touch .hud-weapons, body.touch .hud-help { display: none; }
+@media (max-height: 520px) { body.touch .hud-arena { display: none; } }
+.tpad { position: absolute; inset: 0; touch-action: none; -webkit-user-select: none; user-select: none; }
+.t-zone { position: absolute; left: 0; top: 0; bottom: 0; width: 50%; }
+.t-base { position: absolute; left: 0; top: 0; width: 132px; height: 132px; margin: -66px 0 0 -66px; border-radius: 50%; border: 2px solid rgba(95, 242, 255, 0.28); background: radial-gradient(circle, rgba(95, 242, 255, 0.06), rgba(5, 10, 20, 0.35) 70%); opacity: 0.55; pointer-events: none; transition: opacity 0.12s; }
+.t-base.on { opacity: 1; transition: none; }
+.t-knob { position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; margin: -28px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, rgba(230, 250, 255, 0.85), rgba(95, 242, 255, 0.55) 60%, rgba(30, 120, 140, 0.5)); box-shadow: 0 0 16px rgba(95, 242, 255, 0.5); }
+.t-btn {
+  --s: 60px;
+  position: absolute; width: var(--s); height: var(--s);
+  right: calc(var(--x) - var(--s) / 2 + env(safe-area-inset-right)); bottom: calc(var(--y) - var(--s) / 2 + env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;
+  border-radius: 50%; border: 2px solid rgba(230, 244, 255, 0.35); background: rgba(5, 10, 20, 0.45);
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; color: var(--ink); text-shadow: 0 1px 3px #000;
+}
+.t-btn.on { background: rgba(95, 242, 255, 0.32); border-color: var(--cyan); box-shadow: 0 0 18px rgba(95, 242, 255, 0.55); }
+.t-btn small { display: block; font-size: 9px; letter-spacing: 0.02em; color: var(--dim); max-width: 92%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; }
+.t-btn b { position: relative; font-size: 18px; line-height: 1; }
+.t-R { --s: 88px; --x: 74px; --y: 76px; }
+.t-L { --s: 64px; --x: 176px; --y: 70px; }
+.t-dash { --s: 64px; --x: 150px; --y: 150px; border-color: rgba(255, 181, 71, 0.55); }
+.t-dash.on { background: rgba(255, 181, 71, 0.32); border-color: var(--amber); box-shadow: 0 0 18px rgba(255, 181, 71, 0.55); }
+.t-C { --s: 60px; --x: 70px; --y: 178px; }
+.t-jump { --s: 60px; --x: 258px; --y: 108px; }
+.t-guard { --s: 54px; --x: 214px; --y: 214px; }
+.t-turn { --s: 46px; --x: 70px; --y: 262px; font-size: 16px; }
+.t-turn small { font-size: 8px; }
+.t-pause { --s: 40px; right: auto; left: 50%; bottom: auto; top: calc(2.2vh + 74px); margin-left: -20px; font-size: 14px; }
+.t-wpn i { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(95, 242, 255, 0.35), rgba(95, 242, 255, 0.12)); transform-origin: bottom; transform: scaleY(0); }
+.t-wpn { opacity: 0.6; }
+.t-wpn.ready { opacity: 1; border-color: rgba(95, 242, 255, 0.75); }
+.t-C i { background: linear-gradient(0deg, rgba(255, 181, 71, 0.4), rgba(255, 181, 71, 0.12)); }
+.t-C.ready { border-color: rgba(255, 181, 71, 0.8); }
+.tpad.melee .t-R, .tpad.melee .t-L { border-color: var(--red); box-shadow: 0 0 14px rgba(255, 74, 74, 0.6); }
+.tback { position: absolute; top: calc(10px + env(safe-area-inset-top)); right: calc(14px + env(safe-area-inset-right)); padding: 8px 16px; font-family: var(--mono); letter-spacing: 0.2em; font-size: 13px; color: var(--cyan); border: 1px solid var(--line); background: var(--panel); cursor: pointer; z-index: 2; }
+.settings .val i { font-style: normal; display: inline-block; padding: 0 10px; cursor: pointer; }
+body.touch .settings .val i { padding: 4px 16px; }
+.rotate { position: absolute; inset: 0; z-index: 50; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: var(--bg); font-family: var(--mono); letter-spacing: 0.2em; color: var(--cyan); text-align: center; padding: 24px; }
+.rotate b { font-size: 46px; color: var(--amber); }
+@media (orientation: portrait) and (pointer: coarse) { .rotate { display: flex; } }
+.controls { overflow-y: auto; touch-action: pan-y; }
+
+/* short landscape screens (phones) */
+@media (max-height: 520px) {
+  .screen { padding: 14px calc(24px + env(safe-area-inset-right)) 12px calc(24px + env(safe-area-inset-left)); }
+  .heading { margin-bottom: 10px; font-size: 13px; }
+  .foot { font-size: 11px; }
+  .menu .wordmark { margin-bottom: 12px; }
+  .wordmark.small .w1, .wordmark.small .w2 { font-size: 26px; }
+  .list { gap: 2px; max-width: 520px; }
+  .item { padding: 6px 14px 6px 18px; }
+  .item b { font-size: 16px; }
+  .item span { font-size: 11px; margin-top: 0; }
+  .title .press { margin-top: 5vh; }
+  .select .grid { grid-template-columns: repeat(6, 62px); gap: 6px; }
+  .select .tile span { display: none; }
+  .select .card { margin-top: 10px; padding: 10px 14px; max-width: 420px; }
+  .card .name { font-size: 22px; }
+  .card p { font-size: 12px; margin: 2px 0 6px; line-height: 1.35; }
+  .stat { margin: 1px 0; }
+  .wpns { margin-top: 6px; font-size: 12px; gap: 3px 10px; }
+  .versus .vs-side { padding: 18px 3vw; }
+  .result .big { font-size: 56px; }
+  .result .sub { margin-bottom: 10px; }
+  .result .stats { margin-bottom: 12px; }
+  .result .stats b { font-size: 20px; }
+  .result .list, .pause .list { min-width: 320px; }
+  .controls .col > div { margin: 3px 0; font-size: 13px; }
+  .controls .col > div kbd { min-width: 104px; }
+  .hud-top { top: 8px; left: calc(14px + env(safe-area-inset-left)); right: calc(14px + env(safe-area-inset-right)); }
+  .hud-name { font-size: 12px; margin-bottom: 3px; }
+  .hud-name .role { display: none; }
+  .hud-hp { height: 12px; }
+  .hud-hp-num { font-size: 11px; }
+  .hud-timer { font-size: 30px; }
+  .t-pause { top: 66px; }
+  .hud-stance { bottom: 8px; font-size: 11px; }
+  .hud-banner { top: 30vh; }
+  .hud-warn { top: 24vh; }
+}

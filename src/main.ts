@@ -14,6 +14,7 @@ import { Hud } from './hud'
 import { HumanControls, MenuControls, endFrame, lastDevice, padConnected, type MenuInput } from './input'
 import { ROSTER, mechById } from './roster'
 import { Showcase } from './showcase'
+import { TouchControls } from './touch'
 import { Brain, DIFFICULTY, DIFFICULTY_NAMES, type DummyMode } from './ai'
 import { loadRun, loadSettings, saveRun, saveSettings, storageOk, type ArcadeRun, type Settings } from './save'
 
@@ -27,9 +28,15 @@ app.appendChild(ui)
 const vignette = document.createElement('div')
 vignette.className = 'vignette'
 app.appendChild(vignette)
+const touch = new TouchControls(app)
+const rotate = document.createElement('div')
+rotate.className = 'rotate'
+rotate.innerHTML = '<b>⟳</b><div>TURN YOUR PHONE SIDEWAYS</div>'
+app.appendChild(rotate)
+const coarse = window.matchMedia?.('(pointer: coarse)').matches ?? false
 
 const renderer = new WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' })
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75))
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, coarse ? 1.25 : 1.75)) // phones: fewer pixels, steadier frames
 renderer.outputColorSpace = SRGBColorSpace
 renderer.toneMapping = ACESFilmicToneMapping
 renderer.toneMappingExposure = 1.05
@@ -78,9 +85,23 @@ const h = (html: string): HTMLDivElement => {
 }
 const portrait = (id: string, kind: 'bust' | 'full') => `${import.meta.env.BASE_URL}assets/portraits/${id}-${kind}.webp`
 const hex = (n: number) => '#' + n.toString(16).padStart(6, '0')
-const glyph = (pad: string, key: string) => `<span class="glyph pad">${pad}</span><span class="glyph keys">${key}</span>`
+const glyph = (pad: string, key: string, tap = '') => `<span class="glyph pad">${pad}</span><span class="glyph keys">${key}</span>${tap ? `<span class="glyph touch">${tap}</span>` : ''}`
+const isTouch = () => lastDevice === 'touch'
+/** A BACK button for touch screens, which have no B button or Esc key. */
+function backButton(el: HTMLElement, fn: () => void): void {
+  const b = h('<div class="tback touch-only">◀ BACK</div>')
+  b.addEventListener('click', (e) => { e.stopPropagation(); audio.sfx('ui_back'); fn() })
+  el.appendChild(b)
+}
+/** Phones: go full screen and hold landscape where the browser allows it. */
+function goFullscreen(): void {
+  if (!isTouch() || document.fullscreenElement || !document.fullscreenEnabled) return
+  document.documentElement.requestFullscreen?.({ navigationUI: 'hide' })
+    .then(() => (window.screen.orientation as ScreenOrientation & { lock?: (o: string) => Promise<void> }).lock?.('landscape'))
+    .catch(() => { /* not allowed here; the rotate notice covers portrait */ })
+}
 
-interface Screen { el: HTMLElement; update(dt: number, m: MenuInput): void; leave?(): void; showcase?: boolean }
+interface Screen { el: HTMLElement; update(dt: number, m: MenuInput): void; leave?(): void; showcase?: boolean; match?: boolean }
 let screen: Screen | null = null
 let showcase: Showcase | null = null
 let battle: Battle | null = null
@@ -126,13 +147,13 @@ function titleScreen(): Screen {
   const el = h(`<div class="screen title">
     <div class="wordmark"><div class="w1">VIRTUALLY</div><div class="w2">OFF</div><div class="beam"></div></div>
     <div class="sub">ORBITAL PROVING GROUND · ONE ON ONE</div>
-    <div class="press">${padConnected() ? 'PRESS <b>A</b>' : 'PRESS <b>ENTER</b> OR CONNECT A CONTROLLER'}</div>
-    <div class="sound-hint">Click anywhere if you hear no sound — browsers wait for a click before playing audio.</div>
+    <div class="press"></div>
+    <div class="sound-hint no-touch">Click anywhere if you hear no sound — browsers wait for a click before playing audio.</div>
     <div class="legal">Unofficial, non-commercial fan project by evilgouki. Original machines, names, music and art.</div>
   </div>`)
   const press = el.querySelector('.press') as HTMLElement
   const hint = el.querySelector('.sound-hint') as HTMLElement
-  el.addEventListener('click', () => { audio.resume(); start() })
+  el.addEventListener('click', () => { audio.resume(); goFullscreen(); start() })
   let started = false
   const start = () => {
     if (started) return
@@ -148,7 +169,7 @@ function titleScreen(): Screen {
   return {
     el, showcase: true,
     update(_dt, m) {
-      press.innerHTML = padConnected() ? 'PRESS <b>A</b>' : 'PRESS <b>ENTER</b> OR CONNECT A CONTROLLER'
+      press.innerHTML = padConnected() ? 'PRESS <b>A</b>' : isTouch() ? '<b>TAP</b> TO START' : 'PRESS <b>ENTER</b> OR CONNECT A CONTROLLER'
       hint.style.display = audio.suspended ? 'block' : 'none'
       if (m.confirm || m.start || m.any) start()
     },
@@ -169,11 +190,11 @@ function mainMenu(): Screen {
       ${saved && !saved.ok ? `<div class="item warn"><b>SAVED RUN UNREADABLE</b><span>${saved.reason} Choose to discard it.</span></div>` : ''}
       <div class="item"><b>ARCADE</b><span>Six opponents across three arenas${saved?.ok ? ' · replaces your saved run' : ''}</span></div>
       <div class="item"><b>TRAINING</b><span>A free-fire range with a target machine</span></div>
-      <div class="item"><b>CONTROLS</b><span>The controller and keyboard layout</span></div>
+      <div class="item"><b>CONTROLS</b><span>The controller, keyboard and touch layout</span></div>
       <div class="item"><b>SETTINGS</b><span>Control scheme, volume, effects</span></div>
     </div>
     ${storageOk ? '' : '<div class="foot warn">This browser is not letting the game save; progress and settings last until you close the tab.</div>'}
-    <div class="foot">${glyph('A', 'Enter')} select &nbsp; ${glyph('B', 'Esc')} back</div>
+    <div class="foot no-touch">${glyph('A', 'Enter')} select &nbsp; ${glyph('B', 'Esc')} back</div>
   </div>`)
   const items = [...el.querySelectorAll('.item')] as HTMLElement[]
   const actions: (() => void)[] = []
@@ -184,6 +205,7 @@ function mainMenu(): Screen {
   actions.push(() => go(controlsScreen(() => go(mainMenu()))))
   actions.push(() => go(settingsScreen(() => go(mainMenu()))))
   const nav = listNav(items, (i) => actions[i](), () => go(titleScreen()))
+  backButton(el, () => go(titleScreen()))
   audio.music('title')
   if (showcase) showcase.offset = -1.6
   return { el, showcase: true, update: (_dt, m) => nav(m) }
@@ -194,7 +216,7 @@ function difficultyScreen(): Screen {
   const el = h(`<div class="screen menu">
     <div class="heading">ARCADE · <b>OPPONENT SKILL</b></div>
     <div class="list">${DIFFICULTY_NAMES.map((n, i) => `<div class="item"><b>${n.toUpperCase()}</b><span>${blurbs[i]}</span></div>`).join('')}</div>
-    <div class="foot">Later opponents in the ladder get one step harder. ${glyph('B', 'Esc')} back</div>
+    <div class="foot">Later opponents in the ladder get one step harder. <span class="no-touch">${glyph('B', 'Esc')} back</span></div>
   </div>`)
   const items = [...el.querySelectorAll('.item')] as HTMLElement[]
   items.forEach((e, i) => e.classList.toggle('default', i === settings.difficulty))
@@ -203,6 +225,7 @@ function difficultyScreen(): Screen {
     saveSettings(settings)
     go(selectScreen('arcade'))
   }, () => go(mainMenu()))
+  backButton(el, () => go(mainMenu()))
   // start on the remembered difficulty
   for (let i = 0; i < settings.difficulty; i++) nav({ up: false, down: true, left: false, right: false, confirm: false, back: false, start: false, any: false })
   return { el, showcase: true, update: (_dt, m) => nav(m) }
@@ -218,7 +241,7 @@ function selectScreen(mode: 'arcade' | 'training'): Screen {
     <div class="heading">${mode === 'arcade' ? 'ARCADE · ' + DIFFICULTY_NAMES[settings.difficulty].toUpperCase() : 'TRAINING'} · <b>SELECT YOUR MACHINE</b></div>
     <div class="grid">${ROSTER.map((m) => `<div class="tile" style="--acc:${hex(m.accent)}"><img src="${portrait(m.id, 'bust')}" alt=""><span>${m.name}</span></div>`).join('')}</div>
     <div class="card"></div>
-    <div class="foot">${glyph('D-pad', 'Arrows')} choose &nbsp; ${glyph('A', 'Enter')} launch &nbsp; ${glyph('B', 'Esc')} back</div>
+    <div class="foot"><span class="no-touch">${glyph('D-pad', 'Arrows')} choose &nbsp; ${glyph('A', 'Enter')} launch &nbsp; ${glyph('B', 'Esc')} back</span><span class="touch-only">Tap a machine, then tap it again to launch</span></div>
   </div>`)
   const tiles = [...el.querySelectorAll('.tile')] as HTMLElement[]
   const card = el.querySelector('.card') as HTMLElement
@@ -237,8 +260,12 @@ function selectScreen(mode: 'arcade' | 'training'): Screen {
       </div>`
   }
   tiles.forEach((t, i) => {
-    t.addEventListener('mouseenter', () => { sel = i; paint() })
-    t.addEventListener('click', () => { sel = i; paint(); pick() })
+    t.addEventListener('mouseenter', () => { if (!isTouch()) { sel = i; paint() } }) // a tap also sends mouseenter
+    t.addEventListener('click', () => {
+      // on touch the first tap shows the machine and a second tap launches it
+      if (isTouch() && i !== sel) { sel = i; paint(); audio.sfx('ui_move', { vol: 0.5 }); return }
+      sel = i; paint(); pick()
+    })
   })
   const pick = () => {
     const m = ROSTER[sel]
@@ -248,6 +275,7 @@ function selectScreen(mode: 'arcade' | 'training'): Screen {
     else newRun(m.id)
   }
   paint()
+  backButton(el, () => go(mode === 'arcade' ? difficultyScreen() : mainMenu()))
   audio.music('select')
   audio.voice('select')
   if (showcase) showcase.offset = 1.7
@@ -295,13 +323,15 @@ function versusScreen(run: ArcadeRun): Screen {
     <div class="vs-side r" style="--acc:${hex(foe.accent)}"><img src="${portrait(foe.id, 'full')}" alt=""><div class="n">${foe.name}</div><div class="r">${foe.role}</div></div>
   </div>`)
   let t = 0
+  let tapped = false
+  el.addEventListener('click', () => { tapped = true })
   audio.sfx('power_up', { vol: 0.7 })
   audio.music(null, 0.8)
   return {
     el,
     update(dt, m) {
       t += dt
-      if (t > 3 || (t > 0.6 && (m.confirm || m.start))) startMatch(run)
+      if (t > 3 || (t > 0.6 && (m.confirm || m.start || tapped))) startMatch(run)
     },
   }
 }
@@ -343,7 +373,7 @@ function endBattle(): void {
 function matchScreen(): Screen {
   const el = h(`<div class="screen match"></div>`)
   return {
-    el,
+    el, match: true,
     update(_dt, m) {
       if (m.start && battle && battle.phase !== 'over') {
         audio.sfx('ui_back')
@@ -369,7 +399,7 @@ function pauseScreen(): Screen {
     </div>
   </div>`)
   const items = [...el.querySelectorAll('.item')] as HTMLElement[]
-  const resume = () => { b.paused = false; controls.reset(); go(matchScreen()) }
+  const resume = () => { b.paused = false; controls.reset(); touch.release(); go(matchScreen()) }
   const cycle = (d: 1 | -1) => {
     const order: DummyMode[] = ['walk', 'stand', 'fight']
     trainingDummy = order[(order.indexOf(trainingDummy) + d + 3) % 3]
@@ -432,16 +462,21 @@ function controlsScreen(back: () => void): Screen {
     ['Both sticks', 'Each is one lever: both forward walks, both sideways strafes'], ['Sticks apart', 'Jump'], ['Sticks together', 'Guard'],
     ['LB / RB', 'Turbo: dash'], ['LT / RT', 'Left / right weapon'], ['LT + RT', 'Centre weapon'], ['Fire when close', 'Melee'], ['Menu', 'Pause'],
   ]
+  const touchRows = [
+    ['Left thumb', 'Touch anywhere on the left half and drag to move'], ['DASH', 'Dash in the stick direction'], ['JUMP', 'Jump · hold to rise · DASH in the air air-dashes'],
+    ['JUMP in a dash', 'Dash cancel into a jump'], ['GUARD', 'Guard · also stops a dash dead'], ['R / L / C', 'Right, left and centre weapons; the fill is the gauge'],
+    ['Slide', 'Slide a thumb from DASH onto a weapon for a dash attack'], ['Fire when close', 'Melee (the buttons glow red)'], ['TURN', 'Snap to face the target'], ['II', 'Pause'],
+  ]
   const keys = [['WASD', 'Move'], ['Shift', 'Dash'], ['Space', 'Jump'], ['E / Ctrl', 'Guard'], ['J / K', 'Left / right weapon'], ['L', 'Centre weapon'], ['Q', 'Snap to target'], ['Arrows', 'Look'], ['Esc', 'Pause']]
   const rows = (r: string[][]) => r.map(([a, b]) => `<div><kbd>${a}</kbd><span>${b}</span></div>`).join('')
   const el = h(`<div class="screen controls">
     <div class="heading">CONTROLS · <b>${settings.controls === 'modern' ? 'MODERN' : 'TWIN-LEVER'}</b></div>
     <div class="cols">
-      <div class="col"><h4>XBOX CONTROLLER</h4>${rows(settings.controls === 'modern' ? modern : lever)}</div>
+      <div class="col">${isTouch() ? `<h4>TOUCH</h4>${rows(touchRows)}` : ''}<h4>XBOX CONTROLLER</h4>${rows(settings.controls === 'modern' ? modern : lever)}</div>
       <div class="col"><h4>KEYBOARD</h4>${rows(keys)}
         <h4>TIPS</h4><p>Shots home in, but much less on a dashing machine — dash across fire to dodge it. Firing during a dash gives a dash attack; firing in the air gives an air attack. Each weapon has its own gauge. Big hits and stacked hits knock you down; you cannot be hit while you recover.</p></div>
     </div>
-    <div class="foot">Switch schemes in Settings. ${glyph('B', 'Esc')} back</div>
+    <div class="foot">Switch controller schemes in Settings. ${glyph('B', 'Esc', 'Tap')} back</div>
   </div>`)
   el.addEventListener('click', back)
   return { el, showcase: true, update: (_dt, m) => { if (m.back || m.confirm) { audio.sfx('ui_back'); back() } } }
@@ -463,10 +498,20 @@ function settingsScreen(back: () => void): Screen {
   const el = h(`<div class="screen menu settings">
     <div class="heading"><b>SETTINGS</b></div>
     <div class="list">${rows.map((r) => `<div class="item row"><b>${r.label}</b><span class="val"></span></div>`).join('')}<div class="item"><b>DONE</b></div></div>
-    <div class="foot">${glyph('◀ ▶', '◀ ▶')} change &nbsp; ${glyph('B', 'Esc')} back</div>
+    <div class="foot">${glyph('◀ ▶', '◀ ▶', 'Tap ◀ ▶')} change &nbsp; <span class="no-touch">${glyph('B', 'Esc')} back</span></div>
   </div>`)
   const items = [...el.querySelectorAll('.item')] as HTMLElement[]
-  const paint = () => rows.forEach((r, i) => ((items[i].querySelector('.val') as HTMLElement).textContent = '◀ ' + r.get() + ' ▶'))
+  const paint = () => rows.forEach((r, i) => ((items[i].querySelector('.val') as HTMLElement).innerHTML = `<i data-d="-1">◀</i>${r.get()}<i data-d="1">▶</i>`))
+  // the arrows change a value in that direction; a tap elsewhere on the row steps it forward
+  el.addEventListener('click', (e) => {
+    const a = (e.target as HTMLElement).closest('[data-d]') as HTMLElement | null
+    const row = a ? items.indexOf(a.closest('.item') as HTMLElement) : -1
+    if (!a || row < 0 || row >= rows.length) return
+    e.stopPropagation()
+    rows[row].side(Number(a.dataset.d) as -1 | 1)
+    audio.sfx('ui_move', { vol: 0.5 })
+    paint()
+  }, { capture: true })
   const done = () => { saveSettings(settings); back() }
   const nav = listNav(items, (i) => { if (i < rows.length) { rows[i].side(1); paint() } else done() }, done, (i, d) => { if (i < rows.length) { rows[i].side(d); paint() } })
   paint()
@@ -508,6 +553,7 @@ async function boot(): Promise<void> {
       if (!battle) return
       for (let i = 0; i < Math.round(sec * 60); i++) { battle.update(1 / 60); endFrame() }
       hud?.update(1 / 60, battle.camera.cam, W, H)
+      syncTouch()
       composer.render(1 / 60)
     },
     /** Test hook: hold keyboard codes for the next calls to advance. */
@@ -522,6 +568,11 @@ async function boot(): Promise<void> {
   else go(titleScreen())
 }
 
+function syncTouch(): void {
+  document.body.classList.toggle('touch', lastDevice === 'touch')
+  touch.update(lastDevice === 'touch' && !!screen?.match && !!battle && !battle.paused && battle.phase !== 'over', battle)
+}
+
 let last = performance.now()
 function frame(now: number): void {
   requestAnimationFrame(frame)
@@ -529,6 +580,7 @@ function frame(now: number): void {
   last = now
   const m = menu.read(dt)
   document.body.classList.toggle('keys', lastDevice === 'keys' && !padConnected())
+  syncTouch()
   screen?.update(dt, m)
   if (battle && (!screen || !screen.showcase || battle.paused)) {
     if (!settings.shake) battle.fx.shake = 0

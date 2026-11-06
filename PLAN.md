@@ -15,6 +15,7 @@ by the morning of 2026-11-06.
 | D6 | Presentation concept: **orbital proving ground**. Floating test decks above planets, range-control telemetry HUD in amber and cyan, electronic-orchestral music. It must not look like Assembly Forge (hex board, warm workshop) or Three Kingdoms Tactics (sand table). |
 | D7 | Overnight GPU approved: Flux arena art, Hunyuan cover props, Audio Studio music and SFX, and a Qwen voice-design announcer. |
 | D8 | **3 arenas**: Sunward Deck (open, low cover), Ring Spire (a pillar ring, round), Ember Foundry (raised decks). |
+| D10 | Mobile (owner, 2026-11-06): **on-screen touch controls** for phones and tablets, landscape. A floating left stick and a right-hand button cluster (`src/touch.ts`) feed the same Intent as the pad. |
 | D9 | Saves: settings and the arcade run (between matches). Nothing is saved mid-round. This is KB rule 22 adapted for a fighter; Continue names the machine, stage, difficulty and time. |
 
 ## How it plays

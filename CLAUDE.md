@@ -11,7 +11,7 @@ An original 1v1 3D arena mech fighter (browser, three.js, TypeScript, Vite), pla
 - **Code map:** `src/battle.ts` (match flow, fixed 60 Hz step, hit-stop, slow motion), `src/mech.ts` (movement, weapons,
   melee, hits, model and thrusters), `src/projectiles.ts`, `src/ai.ts`, `src/camera.ts`, `src/fx.ts` (pooled effects),
   `src/arena.ts` (three arenas, box collision), `src/hud.ts`, `src/main.ts` (renderer, bloom, screens), `src/input.ts`
-  (gamepad and keyboard to an Intent), `src/audio.ts`, `src/save.ts`.
+  (gamepad, keyboard and touch to an Intent), `src/touch.ts` (on-screen phone controls), `src/audio.ts`, `src/save.ts`.
 - **Assets:** `public/assets/models/u*.glb` are rigged machines copied from Assembly Forge (clips idle, walk, jump, fly,
   melee, shoot, hit, destroyed; 1 unit tall, facing +z). Generated skies, textures, props and audio come from
   `tools/gen/` (the local studios; see tabletop-kb `local-ai-studios.md`).

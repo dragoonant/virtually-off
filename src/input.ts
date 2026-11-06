@@ -37,7 +37,11 @@ export function endFrame(): void {
   taps.clear()
 }
 let lastPadIndex = -1
-export let lastDevice: 'pad' | 'keys' = 'keys'
+export let lastDevice: 'pad' | 'keys' | 'touch' =
+  typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches ? 'touch' : 'keys'
+
+/** Held state of the on-screen touch controls (see touch.ts). */
+export const virtual = { mx: 0, my: 0, dash: false, jump: false, guard: false, L: false, R: false, C: false, turn: false, pause: false }
 
 if (typeof window !== 'undefined') {
   window.addEventListener('keydown', (e) => {
@@ -48,6 +52,7 @@ if (typeof window !== 'undefined') {
   })
   window.addEventListener('keyup', (e) => keys.delete(e.code))
   window.addEventListener('blur', () => keys.clear())
+  window.addEventListener('pointerdown', (e) => { if (e.pointerType === 'touch') lastDevice = 'touch' }, { capture: true })
   window.addEventListener('gamepadconnected', (e) => {
     lastPadIndex = (e as GamepadEvent).gamepad.index
     lastDevice = 'pad'
@@ -118,6 +123,16 @@ export class HumanControls {
         cKey = pressed(p, BTN.Y)
       }
     }
+    // on-screen touch controls
+    const v = virtual
+    mx += v.mx; my += v.my
+    dashHeld ||= v.dash
+    jumpHeld ||= v.jump
+    guard ||= v.guard
+    lHeld ||= v.L
+    rHeld ||= v.R
+    cKey ||= v.C
+    turnHeld ||= v.turn
     // keyboard: WASD move, Space jump, Shift dash, Ctrl/E guard, J/K left/right weapon, L or J+K centre, Q quick turn, arrows look
     if (k('KeyA')) mx -= 1
     if (k('KeyD')) mx += 1
@@ -183,7 +198,7 @@ export class MenuControls {
       right: pressed(p, BTN.RIGHT) || ax > 0.55 || k('ArrowRight') || k('KeyD'),
       confirm: pressed(p, BTN.A) || k('Enter') || k('Space'),
       back: pressed(p, BTN.B) || k('Escape') || k('Backspace'),
-      start: pressed(p, BTN.MENU) || k('Escape') || k('KeyP'),
+      start: pressed(p, BTN.MENU) || k('Escape') || k('KeyP') || virtual.pause,
     }
     const out: MenuInput = { up: false, down: false, left: false, right: false, confirm: false, back: false, start: false, any: false }
     for (const [name, on] of Object.entries(raw) as [keyof typeof raw, boolean][]) {

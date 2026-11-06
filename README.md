@@ -31,6 +31,10 @@ together guards, and the bumpers are the turbo (dash) buttons.
 
 On a keyboard: WASD move, Shift dash, Space jump, E guard, J/K left/right weapon, L centre weapon, Q snap, Esc pause.
 
+On a phone or tablet (held sideways) the game shows on-screen controls: touch anywhere on the left half and drag to
+move, and use the right-hand cluster for R, L and C (each button fills with its gauge), DASH, JUMP, GUARD and TURN.
+Slide a thumb from DASH onto a weapon for a dash attack. II pauses. Menus are tapped, with a BACK button top right.
+
 ## Develop
 ```bash
 npm install

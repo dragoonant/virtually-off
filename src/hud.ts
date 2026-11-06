@@ -171,7 +171,7 @@ export class Hud {
 
     // incoming warning
     const th = b.projectiles.threat(me)
-    const warnOn = th.t < 0.65 && b.phase === 'fight'
+    const warnOn = th.t < 0.65 && b.phase === 'fight' && !b.paused
     if (warnOn && !this.warn.classList.contains('on')) audio.sfx('warning', { vol: 0.3, minGap: 1.6 })
     this.warn.classList.toggle('on', warnOn)
 
