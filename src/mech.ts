@@ -77,6 +77,9 @@ export class Mech {
   private mats: MeshStandardMaterial[] = []
   private thrustLoop: { set: (v: number, r: number) => void; stop: () => void } | null = null
   private stepT = 0
+  private ghosts: { root: Object3D; pivot: Group; bones: Bone[]; mat: MeshBasicMaterial; t: number }[] = []
+  private liveBones: Bone[] = []
+  private ghostT = 0
 
   constructor(def: MechDef, side: 0 | 1) {
     this.def = def
@@ -107,6 +110,25 @@ export class Mech {
       this.actions.set(c.name, a)
     }
     this.play('idle', 0)
+    this.model.traverse((o) => { if ((o as Bone).isBone) this.liveBones.push(o as Bone) })
+    // dash afterimages: three translucent copies that take the live pose when they spawn, then fade
+    for (let i = 0; i < 3; i++) {
+      const g = assets.mech(def.id).scene
+      g.scale.setScalar(SCALE)
+      const mat = new MeshBasicMaterial({ color: new Color(def.accent).multiplyScalar(0.9), transparent: true, opacity: 0, blending: AdditiveBlending, depthWrite: false, fog: false })
+      const bones: Bone[] = []
+      g.traverse((o) => {
+        const mesh = o as Mesh
+        if (mesh.isMesh) { mesh.material = mat; mesh.castShadow = false; mesh.receiveShadow = false }
+        if ((o as Bone).isBone) bones.push(o as Bone)
+      })
+      const pivot = new Group()
+      const root = new Group()
+      pivot.add(g)
+      root.add(pivot)
+      root.visible = false
+      this.ghosts.push({ root, pivot, bones, mat, t: 0 })
+    }
 
     // thrusters: two flames behind the back unit
     const accent = new Color(def.accent)
@@ -141,12 +163,14 @@ export class Mech {
     this.target = target
     battle.scene.add(this.root)
     battle.scene.add(this.sideRing)
+    for (const g of this.ghosts) battle.scene.add(g.root)
     this.thrustLoop = audio.loop('thruster_loop')
   }
 
   dispose(): void {
     this.root.removeFromParent()
     this.sideRing.removeFromParent()
+    for (const g of this.ghosts) g.root.removeFromParent()
     this.thrustLoop?.stop()
     this.mixer.stopAllAction()
   }
@@ -714,6 +738,29 @@ export class Mech {
       if (s === 'dash' && this.grounded && Math.random() < 0.6) this.battle.fx.dust(this.pos, 1, 3)
     }
     this.thrustLoop?.set(power > 0.6 ? Math.min(0.55, power * 0.35) : 0.04, 0.85 + power * 0.25)
+
+    // afterimages while dashing
+    this.ghostT -= dt
+    if ((s === 'dash' || s === 'airdash' || (s === 'melee' && this.melee && this.melee.t < 0.3)) && this.ghostT <= 0) {
+      this.ghostT = 0.07
+      const g = this.ghosts.reduce((a, b) => (a.t < b.t ? a : b))
+      for (let i = 0; i < g.bones.length && i < this.liveBones.length; i++) {
+        g.bones[i].position.copy(this.liveBones[i].position)
+        g.bones[i].quaternion.copy(this.liveBones[i].quaternion)
+        g.bones[i].scale.copy(this.liveBones[i].scale)
+      }
+      g.root.position.copy(this.root.position)
+      g.root.rotation.copy(this.root.rotation)
+      g.pivot.rotation.copy(this.pivot.rotation)
+      g.pivot.position.copy(this.pivot.position)
+      g.t = 0.28
+      g.root.visible = true
+    }
+    for (const g of this.ghosts) {
+      if (g.t <= 0) { g.root.visible = false; continue }
+      g.t -= dt
+      g.mat.opacity = Math.max(0, g.t / 0.28) * 0.32
+    }
 
     // a badly damaged machine smokes and sparks
     const hk = this.hp / this.def.hp

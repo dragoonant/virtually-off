@@ -36,7 +36,23 @@
   "vulcan": "sfx/vulcan.mp3",
   "warning": "sfx/warning.mp3"
  },
- "voice": {},
+ "voice": {
+  "continue": "voice/continue.mp3",
+  "defeat": "voice/defeat.mp3",
+  "down": "voice/down.mp3",
+  "draw": "voice/draw.mp3",
+  "engage": "voice/engage.mp3",
+  "perfect": "voice/perfect.mp3",
+  "ready": "voice/ready.mp3",
+  "round1": "voice/round1.mp3",
+  "round2": "voice/round2.mp3",
+  "round_final": "voice/round_final.mp3",
+  "select": "voice/select.mp3",
+  "timeup": "voice/timeup.mp3",
+  "title": "voice/title.mp3",
+  "training": "voice/training.mp3",
+  "victory": "voice/victory.mp3"
+ },
  "durations": {
   "music": {
    "battle1": 120,
@@ -75,6 +91,22 @@
    "vulcan": 1,
    "warning": 1.5
   },
-  "voice": {}
+  "voice": {
+   "continue": 0.5,
+   "defeat": 0.56,
+   "down": 1.42,
+   "draw": 0.45,
+   "engage": 0.61,
+   "perfect": 0.61,
+   "ready": 0.44,
+   "round1": 0.75,
+   "round2": 0.89,
+   "round_final": 0.82,
+   "select": 1.21,
+   "timeup": 0.61,
+   "title": 1.1,
+   "training": 2.25,
+   "victory": 0.51
+  }
  }
 }
