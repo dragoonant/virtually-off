@@ -5,6 +5,7 @@ import type { Battle } from './battle'
 import type { Slot } from './roster'
 import { HEIGHT } from './mech'
 import { lastDevice } from './input'
+import { audio } from './audio'
 
 const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls: string, parent?: HTMLElement, html?: string): HTMLElementTagNameMap[K] => {
   const e = document.createElement(tag)
@@ -170,7 +171,9 @@ export class Hud {
 
     // incoming warning
     const th = b.projectiles.threat(me)
-    this.warn.classList.toggle('on', th.t < 0.65 && b.phase === 'fight')
+    const warnOn = th.t < 0.65 && b.phase === 'fight'
+    if (warnOn && !this.warn.classList.contains('on')) audio.sfx('warning', { vol: 0.3, minGap: 1.6 })
+    this.warn.classList.toggle('on', warnOn)
 
     // banner
     const bn = b.banner

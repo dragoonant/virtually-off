@@ -327,9 +327,15 @@ export class Arena {
     g.position.set(b.x, b.y0 ?? 0, b.z)
     const prop = b.prop ? assets.prop(b.prop) : null
     if (prop) {
-      // fit the generated prop to the block's box; the collision is the box
-      const k = Math.min(b.w / prop.size.x, b.h / prop.size.y, b.d / prop.size.z)
-      const kx = b.w / prop.size.x, ky = b.h / prop.size.y, kz = b.d / prop.size.z
+      // turn a long prop to lie along the box's long side, then fit it to the box; the collision is the box
+      let sx = prop.size.x, sz = prop.size.z
+      if (Math.abs(b.w - b.d) > 0.5 && (b.w > b.d) !== (sx > sz)) {
+        prop.obj.children[0].rotation.y = Math.PI / 2
+        prop.obj.children[0].position.set(prop.obj.children[0].position.z, prop.obj.children[0].position.y, -prop.obj.children[0].position.x)
+        ;[sx, sz] = [sz, sx]
+      }
+      const k = Math.min(b.w / sx, b.h / prop.size.y, b.d / sz)
+      const kx = b.w / sx, ky = b.h / prop.size.y, kz = b.d / sz
       // keep proportions close to the model while filling the box
       prop.obj.scale.set(Math.min(kx, k * 1.4), ky, Math.min(kz, k * 1.4))
       g.add(prop.obj)

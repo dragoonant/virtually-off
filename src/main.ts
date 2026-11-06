@@ -1,7 +1,7 @@
 // Virtually Off: boot, the renderer and post-processing, and the screen flow
 // (title -> menu -> difficulty -> select -> versus -> match -> result, plus training, settings and controls).
 import './style.css'
-import { ACESFilmicToneMapping, PCFSoftShadowMap, SRGBColorSpace, Vector2, WebGLRenderer } from 'three'
+import { ACESFilmicToneMapping, PCFShadowMap, SRGBColorSpace, Vector2, WebGLRenderer } from 'three'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
@@ -34,7 +34,7 @@ renderer.outputColorSpace = SRGBColorSpace
 renderer.toneMapping = ACESFilmicToneMapping
 renderer.toneMappingExposure = 1.05
 renderer.shadowMap.enabled = true
-renderer.shadowMap.type = PCFSoftShadowMap
+renderer.shadowMap.type = PCFShadowMap
 assets.setRenderer(renderer)
 
 const composer = new EffectComposer(renderer)
