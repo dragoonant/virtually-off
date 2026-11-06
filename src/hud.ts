@@ -36,6 +36,8 @@ export class Hud {
   private lag = [1, 1]
   private popEls: HTMLDivElement[] = []
   private helpDevice = ''
+  private hurt: HTMLDivElement
+  private lastHp = 0
 
   constructor(parent: HTMLElement, private battle: Battle) {
     const b = battle
@@ -83,6 +85,8 @@ export class Hud {
     this.popLayer = el('div', 'hud-pops', this.root)
     this.warn = el('div', 'hud-warn', this.root, '▲ INCOMING')
     this.help = el('div', 'hud-help', this.root)
+    this.hurt = el('div', 'hud-hurt', this.root)
+    this.lastHp = b.human.hp
     if (b.opts.mode !== 'training') this.help.style.display = 'none'
   }
 
@@ -158,6 +162,11 @@ export class Hud {
         this.arrow.style.transform = `translate(${cx + Math.cos(ang) * r}px, ${cy + Math.sin(ang) * r}px) rotate(${ang}rad)`
       } else this.arrow.style.display = 'none'
     }
+
+    // red edge flash when the player is hit
+    if (me.hp < this.lastHp - 0.5) this.hurt.style.opacity = String(Math.min(1, 0.35 + (this.lastHp - me.hp) / 150))
+    else this.hurt.style.opacity = String(Math.max(0, Number(this.hurt.style.opacity || 0) - dt * 2.5))
+    this.lastHp = me.hp
 
     // incoming warning
     const th = b.projectiles.threat(me)

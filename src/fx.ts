@@ -61,9 +61,11 @@ class ParticlePool {
   private grav: Float32Array
   private next = 0
   private geo: BufferGeometry
+  private hotStart: number
 
   constructor(n: number, smoke: boolean) {
     this.n = n
+    this.hotStart = smoke ? 2 : 0.7
     this.pos = new Float32Array(n * 3)
     this.vel = new Float32Array(n * 3)
     this.tint = new Float32Array(n * 3)
@@ -128,9 +130,9 @@ class ParticlePool {
       this.pos[i * 3 + 1] += this.vel[i * 3 + 1] * dt
       this.pos[i * 3 + 2] += this.vel[i * 3 + 2] * dt
       this.size[i] = this.size0[i] * (1 + this.grow[i] * (1 - k))
-      this.alpha[i] = Math.min(1, k * 1.6)
+      this.alpha[i] = Math.min(1, k * 1.6) * (this.hotStart > 1 ? Math.min(1, (1 - k) * 6) : 1)
       // glow cools from white-hot toward its colour, then fades
-      const hot = Math.max(0, (k - 0.7) / 0.3)
+      const hot = Math.max(0, (k - this.hotStart) / 0.3)
       this.tint[i * 3] = this.base[i * 3] + (1 - this.base[i * 3]) * hot
       this.tint[i * 3 + 1] = this.base[i * 3 + 1] + (1 - this.base[i * 3 + 1]) * hot
       this.tint[i * 3 + 2] = this.base[i * 3 + 2] + (1 - this.base[i * 3 + 2]) * hot
@@ -147,6 +149,7 @@ interface Timed { obj: Mesh; t: number; max: number; kind: 'flash' | 'ring' | 'b
 const tmpV = new Vector3()
 const tmpV2 = new Vector3()
 const tmpC = new Color()
+const DEEP = new Color(0xa01800)
 const rnd = (a: number) => (Math.random() * 2 - 1) * a
 
 export class Fx {
@@ -210,7 +213,7 @@ export class Fx {
   flash(at: Vector3, color: number, size: number, time = 0.12): void {
     const f = this.take(this.flashes)
     f.obj.position.copy(at)
-    ;(f.obj.material as MeshBasicMaterial).color.set(color).multiplyScalar(2.5)
+    ;(f.obj.material as MeshBasicMaterial).color.set(color).multiplyScalar(1.4)
     f.s0 = size * 0.6
     f.s1 = size
     f.t = f.max = time
@@ -273,26 +276,27 @@ export class Fx {
       tmpV2.copy(dir).multiplyScalar(8 + Math.random() * 10).add(tmpV.set(rnd(3), rnd(3), rnd(3)))
       this.glow.emit(at, tmpV2, tmpC, 0.5 * scale, 0.15 + Math.random() * 0.1, { drag: 6 })
     }
-    this.light(at, color, 30 * scale, 0.1)
+    this.light(at, color, 8 * scale, 0.1)
   }
 
   explosion(at: Vector3, radius: number, color = 0xff8a3d): void {
-    this.flash(at, 0xfff2d0, radius * 1.1, 0.16)
-    this.flash(at, color, radius * 0.8, 0.35)
+    this.flash(at, 0xffe0b0, radius * 0.7, 0.12)
+    this.flash(at, color, radius * 0.55, 0.3)
     this.ring(tmpV.set(at.x, Math.max(0.08, at.y - radius * 0.3), at.z), color, radius * 2.4, 0.5)
-    this.light(at, color, 80 * radius, 0.35)
-    tmpC.set(color)
-    const fire = Math.round(30 + radius * 18)
+    this.light(at, color, 14 * radius, 0.35)
+    const fire = Math.round(18 + radius * 10)
     for (let i = 0; i < fire; i++) {
-      tmpV2.set(rnd(1), rnd(1) + 0.4, rnd(1)).normalize().multiplyScalar(radius * (2 + Math.random() * 5))
-      this.glow.emit(at, tmpV2, tmpC, radius * (0.6 + Math.random() * 0.8), 0.35 + Math.random() * 0.45, { drag: 3.5, grow: 1.2, grav: -1 })
+      // deep orange to dark red, so stacked additive particles land on orange rather than white
+      tmpC.set(color).lerp(DEEP, Math.random() * 0.7).multiplyScalar(0.55)
+      tmpV2.set(rnd(1), rnd(1) + 0.4, rnd(1)).normalize().multiplyScalar(radius * (2 + Math.random() * 4))
+      this.glow.emit(at, tmpV2, tmpC, radius * (0.35 + Math.random() * 0.5), 0.35 + Math.random() * 0.45, { drag: 3.5, grow: 1.2, grav: -1 })
     }
     this.sparks(at, 0xffd28a, Math.round(20 + radius * 6), radius * 9, 0.3)
     tmpC.set(0x2a2622)
     for (let i = 0; i < 16; i++) {
       tmpV2.set(rnd(1), Math.random() + 0.3, rnd(1)).multiplyScalar(radius * 2)
       tmpV.copy(at).add(tmpV2.clone().multiplyScalar(0.2))
-      this.smoke.emit(tmpV, tmpV2, tmpC, radius * (1.5 + Math.random()), 1.2 + Math.random() * 0.8, { drag: 1.8, grow: 1.8, grav: -1.5 })
+      this.smoke.emit(tmpV, tmpV2, tmpC, radius * (1.1 + Math.random() * 0.8), 1.2 + Math.random() * 0.8, { drag: 1.8, grow: 1.6, grav: -1.5 })
     }
     this.shake = Math.min(1, this.shake + radius * 0.07)
   }

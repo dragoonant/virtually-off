@@ -402,6 +402,8 @@ export class Mech {
     this.battle.events.dash(this)
     audio.sfx('dash', { at: this.pos, vol: 0.9 })
     this.battle.fx.dust(this.pos, 10, 6)
+    this.battle.fx.ring(v2.copy(this.pos).setY(this.pos.y + 0.1), this.def.accent, 3.2, 0.3)
+    this.battle.fx.flash(v2.copy(this.pos).setY(this.pos.y + HEIGHT * 0.6).addScaledVector(dir, -0.8), this.def.accent, 1.4, 0.1)
   }
 
   private startAirDash(dir: Vector3): void {
@@ -443,6 +445,7 @@ export class Mech {
     if (hard) {
       audio.sfx('land', { at: this.pos, vol: 0.8 })
       this.battle.fx.dust(this.pos, 10, 6)
+      this.battle.fx.ring(v2.copy(this.pos).setY(this.pos.y + 0.08), 0xc8d8e8, 3, 0.35)
     }
   }
 
@@ -711,6 +714,19 @@ export class Mech {
       if (s === 'dash' && this.grounded && Math.random() < 0.6) this.battle.fx.dust(this.pos, 1, 3)
     }
     this.thrustLoop?.set(power > 0.6 ? Math.min(0.55, power * 0.35) : 0.04, 0.85 + power * 0.25)
+
+    // a badly damaged machine smokes and sparks
+    const hk = this.hp / this.def.hp
+    if (hk < 0.35 && s !== 'ko' && Math.random() < (0.35 - hk) * 2.5) {
+      v3.copy(this.pos).add(v1.set((Math.random() - 0.5) * 0.8, HEIGHT * (0.55 + Math.random() * 0.3), (Math.random() - 0.5) * 0.8))
+      this.battle.fx.smokeTrail(v3)
+      if (Math.random() < 0.15) this.battle.fx.sparks(v3, 0xffc070, 3, 6, 0.25)
+    }
+    if (s === 'ko' && Math.random() < 0.6) {
+      v3.copy(this.pos).add(v1.set((Math.random() - 0.5) * 1.2, HEIGHT * Math.random() * 0.8, (Math.random() - 0.5) * 1.2))
+      this.battle.fx.smokeTrail(v3)
+      this.battle.fx.trail(v3, 0xff7a2a, 0.6, 0.3)
+    }
 
     // footsteps
     if (s === 'move' && this.grounded && hs > 2) {

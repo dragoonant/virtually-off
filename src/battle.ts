@@ -50,7 +50,7 @@ export class Battle {
   matchTime = 0
   private acc = 0
   private hitstopT = 0
-  private koQueue: { t: number; at: Vector3; r: number }[] = []
+  private koQueue: { t: number; off: Vector3; r: number; m: Mech }[] = []
   private roundWinner: 0 | 1 | -1 = -1
   private perfect = true
   onOver: (r: MatchResult) => void = () => {}
@@ -173,8 +173,9 @@ export class Battle {
     for (const k of this.koQueue) {
       k.t -= sdt
       if (k.t <= 0) {
-        this.fx.explosion(k.at, k.r, 0xff8a3d)
-        audio.sfx(k.r > 2.5 ? 'explosion_big' : 'explosion_small', { at: k.at, vol: 0.9, minGap: 0.05 })
+        const at = k.m.centerInto(new Vector3()).add(k.off)
+        this.fx.explosion(at, k.r, 0xff8a3d)
+        audio.sfx(k.r > 2.5 ? 'explosion_big' : 'explosion_small', { at, vol: 0.9, minGap: 0.05 })
       }
     }
     this.koQueue = this.koQueue.filter((k) => k.t > 0)
@@ -294,9 +295,9 @@ export class Battle {
     const c = m.centerInto(new Vector3())
     this.fx.explosion(c, 3.2, 0xffa050)
     for (let i = 0; i < 7; i++) {
-      this.koQueue.push({ t: 0.25 + i * 0.28, at: c.clone().add(new Vector3((Math.random() - 0.5) * 2.5, Math.random() * 1.8 - 0.4, (Math.random() - 0.5) * 2.5)), r: 1.2 + Math.random() * 1.6 })
+      this.koQueue.push({ t: 0.25 + i * 0.28, off: new Vector3((Math.random() - 0.5) * 2.2, Math.random() * 1.6 - 0.6, (Math.random() - 0.5) * 2.2), r: 1.2 + Math.random() * 1.4, m })
     }
-    this.koQueue.push({ t: 2.1, at: c.clone(), r: 4.5 })
+    this.koQueue.push({ t: 2.1, off: new Vector3(), r: 4, m })
   }
 
   spawnShot(owner: Mech, shot: ShotParams, origin: Vector3, aim: Vector3, fan: number, slot: Slot): void {

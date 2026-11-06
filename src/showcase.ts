@@ -68,9 +68,9 @@ export class Showcase {
     this.t += dt
     this.mixer?.update(dt)
     this.turntable.rotation.y = this.t * 0.35
-    const r = 7.2
+    const r = 8.6
     const a = 0.5
-    this.camera.position.set(Math.sin(a) * r - this.offset, 2.2, Math.cos(a) * r)
+    this.camera.position.set(Math.sin(a) * r - this.offset, 2.4, Math.cos(a) * r)
     this.camera.lookAt(-this.offset, 1.15, 0)
   }
 }

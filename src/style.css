@@ -203,3 +203,4 @@ kbd { font-family: var(--mono); font-size: 12px; padding: 2px 7px; border: 1px s
 }
 body.keys .glyph.pad { display: none; }
 body.keys .glyph.keys { display: inline; }
+.hud-hurt { position: absolute; inset: 0; opacity: 0; background: radial-gradient(ellipse at center, transparent 55%, rgba(255, 40, 30, 0.55) 100%); }

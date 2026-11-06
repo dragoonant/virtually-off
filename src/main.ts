@@ -144,7 +144,7 @@ function titleScreen(): Screen {
   }
   audio.music('title')
   showcase?.show('u07')
-  if (showcase) showcase.offset = 0
+  if (showcase) showcase.offset = 2.1
   return {
     el, showcase: true,
     update(_dt, m) {

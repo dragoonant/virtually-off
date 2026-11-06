@@ -1,0 +1,26 @@
+{
+ "music": {
+  "battle1": "music/battle1.mp3",
+  "battle2": "music/battle2.mp3",
+  "battle3": "music/battle3.mp3",
+  "defeat": "music/defeat.mp3",
+  "select": "music/select.mp3",
+  "title": "music/title.mp3",
+  "victory": "music/victory.mp3"
+ },
+ "sfx": {},
+ "voice": {},
+ "durations": {
+  "music": {
+   "battle1": 120,
+   "battle2": 120,
+   "battle3": 120,
+   "defeat": 15,
+   "select": 59,
+   "title": 90,
+   "victory": 25
+  },
+  "sfx": {},
+  "voice": {}
+ }
+}

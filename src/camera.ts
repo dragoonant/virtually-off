@@ -52,7 +52,7 @@ export class ChaseCam {
       const fx = Math.sin(yaw), fz = Math.cos(yaw)
       // close in when the fight is close, pull back when it is far
       const back = 8.4 + Math.min(3, dist * 0.05)
-      const up = 3.9 + Math.max(0, (me.pos.y - foe.pos.y) * 0.25)
+      const up = 3.9 + Math.max(0, (me.pos.y - foe.pos.y) * 0.25) + Math.max(0, 7 - dist) * 0.35
       v.set(me.pos.x - fx * back, me.pos.y + up, me.pos.z - fz * back)
       // keep the camera inside the fence so it never looks through it
       arena.clampBounds(v, 0.6)
